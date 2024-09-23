@@ -1,0 +1,9 @@
+cargo-features = ["edition2024"]
+
+[package]
+name = "firmaware"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+actix-web = "3"
