@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::{BufReader, Seek, SeekFrom, Error as IoError};
 use std::sync::Arc;
-
+use std::env::var;
 use hyper::service::service_fn;
 use hyper::{Body, Request, Response};
 use rustls::{Certificate, PrivateKey, ServerConfig};
@@ -71,17 +71,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
     // Paths to your certificate and private key
-    let cert_path = "/opt/firmaware/fullchain.cer"; // Replace with your actual path
-    let key_path  = "/opt/firmaware/private_key.key"; // Replace with your actual path
+    let cert_path = var("CERT_PATH")?; // Replace with your actual path
+    let key_path  = var("KEY_PATH")?; // Replace with your actual path
 
     // Load certificates
-    let certs = load_certs(cert_path).map_err(|e| {
+    let certs = load_certs(&cert_path).map_err(|e| {
         error!("Error loading certificates: {}", e);
         Box::new(e) as Box<dyn std::error::Error + Send + Sync>
     })?;
 
     // Load private key
-    let key = load_private_key(key_path).map_err(|e| {
+    let key = load_private_key(&key_path).map_err(|e| {
         error!("Error loading private key: {}", e);
         Box::new(e) as Box<dyn std::error::Error + Send + Sync>
     })?;
